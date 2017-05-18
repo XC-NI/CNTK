@@ -26,25 +26,6 @@
 //use when the wrapped method returns an idiomatic type
 //for non-idiomatic types, such as the default collection wrappers use RENAME_AND_MAKE_PRIVATE below
 //and then write custom method in the language specific file
-%define MAKE_GETTER(namespace, method)
-    %rename
-    #if defined(SWIGCSHARP)
-    (Get ## method)
-    #else
-    (get ## method)
-    #endif
-    namespace##::##method
-%enddef
-
-%define RENAME_AND_MAKE_PRIVATE(namespace, method)
-    #if defined(SWIGCSHARP)
-    %csmethodmodifiers
-    #else
-    %javamethodmodifiers
-    #endif
-    namespace##::##method "private";
-    %rename (_##method) namespace##::##method
-%enddef
 
 #ifdef SWIGCSHARP
 #define %make_private(x) %csmethodmodifiers x "private"
@@ -52,11 +33,26 @@
   %csmethodmodifiers namespace##::##method "private";
   %rename (_##method) namespace##::##method
 %enddef
+// #define %MAKE_GETTER(namespace, method) rename_and_make_private(namespace, method)
+%define MAKE_GETTER(namespace, method)
+    %rename (Get ## method) namespace##::##method
+%enddef
+%define RENAME_AND_MAKE_PRIVATE(namespace, method)
+  %csmethodmodifiers namespace##::##method "private";
+  %rename (_##method) namespace##::##method
+%enddef
 #endif //SWIGCSHARP
 
 #ifdef SWIGJAVA
+%define MAKE_GETTER(namespace, method)
+    %rename (get ## method) namespace##::##method
+%enddef
 #define %make_private(x) %javamethodmodifiers x "private"
 %define %rename_and_make_private(namespace, method)
+  %javamethodmodifiers namespace##::##method "private";
+  %rename (_##method) namespace##::##method
+%enddef
+%define RENAME_AND_MAKE_PRIVATE(namespace, method)
   %javamethodmodifiers namespace##::##method "private";
   %rename (_##method) namespace##::##method
 %enddef
@@ -432,6 +428,10 @@ SWIG_STD_VECTOR_ENHANCED(CNTK::DeviceDescriptor)
 %apply double INPUT[]  { double *dataBuffer }
 #endif
 
+%rename(AreEqual) operator==;
+%rename(AreNotEqual) operator!=;
+%ignore operator[];
+
 // exception handling
 %include "CNTKExceptionHandling.i"
 
@@ -448,7 +448,6 @@ RENAME_AND_MAKE_PRIVATE(CNTK::DeviceDescriptor, SetExcludedDevices);
 %rename (trySetDefaultDevice) CNTK::DeviceDescriptor::TrySetDefaultDevice;
 %rename (toString) CNTK::DeviceDescriptor::AsString;
 #endif
-%rename (AreEqualDeviceDescriptor) CNTK::operator==(const DeviceDescriptor& left, const DeviceDescriptor& right);
 
 // class Axis
 MAKE_GETTER(CNTK::Axis, Name);
@@ -468,9 +467,7 @@ RENAME_AND_MAKE_PRIVATE(CNTK::Axis, IsOrdered);
 %ignore_function CNTK::Axis::DefaultInputVariableDynamicAxes();
 %ignore_function CNTK::Axis::UnknownDynamicAxes();
 
-%rename(AreEqual) operator==;
-%rename(AreNotEqual) operator!=;
-%ignore operator[];
+
 
 // class Function
 %ignore CNTK::Function::BlockArgumentsMapping;
@@ -509,8 +506,6 @@ RENAME_AND_MAKE_PRIVATE(CNTK::Function, Clone);
 %rename_and_make_private(CNTK::Function, Evaluate);
 %rename_and_make_private(CNTK::Function, Load);
 %rename_and_make_private(CNTK::Function, FindByName);
-%rename_and_make_private(CNTK::Function, FindAllWithName);
-%rename_and_make_private(CNTK::Function, Clone);
 #endif // SWIGCSHARP
 
 // Ignore exposing istream to C# for now. Todo: find a good solution to map C# System.IO.Stream to std::istream.

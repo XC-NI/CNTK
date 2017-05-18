@@ -394,6 +394,12 @@
         get { return GetName(); }
     }
 
+    // Property Uid.
+    public string Uid
+    {
+        get { return GetUid(); }
+    }
+
     // Property Kind.
     public VariableKind Kind
     {
@@ -737,6 +743,15 @@
         }
     }
 
+    // Property IsValid
+    public bool IsValid
+    {
+        get
+        {
+            return _IsValid();
+        }
+    }
+
     // Property IsSparse
     public bool IsSparse
     {
@@ -761,6 +776,24 @@
         get
         {
             return (int)_MaskedCount();
+        }
+    }
+
+    // Property Data
+    public NDArrayView Data
+    {
+        get
+        {
+            return GetData();
+        }
+    }
+
+    // Property Mask
+    public NDMask Mask
+    {
+        get
+        {
+            return GetMask();
         }
     }
 
