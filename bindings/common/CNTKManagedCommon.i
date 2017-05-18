@@ -550,7 +550,7 @@ RENAME_AND_MAKE_PRIVATE(CNTK::Function, Clone);
 %ignore CNTK::Variable::Variable;
 %ignore CNTK::Variable::operator FunctionPtr;
 %rename ("%s") CNTK::Variable::Variable(const FunctionPtr& function);
-<<<<<<< 4b4cf975110f13ad85bbea11fe7416c0c676a12d
+
 MAKE_GETTER(CNTK::Variable, Shape);
 MAKE_GETTER(CNTK::Variable, Name);
 MAKE_GETTER(CNTK::Variable, Uid);
@@ -563,6 +563,11 @@ RENAME_AND_MAKE_PRIVATE(CNTK::Variable, IsOutput);
 RENAME_AND_MAKE_PRIVATE(CNTK::Variable, IsParameter);
 RENAME_AND_MAKE_PRIVATE(CNTK::Variable, IsConstant);
 RENAME_AND_MAKE_PRIVATE(CNTK::Variable, IsPlaceholder);
+
+#ifdef SWIGCSHARP
+RENAME_AND_MAKE_PRIVATE(CNTK::Variable, NeedsGradient);
+#endif
+
 #ifdef SWIGJAVA
 %rename (getDataType) CNTK::Variable::GetDataType;
 %rename (needsGradient) CNTK::Variable::NeedsGradient;
@@ -577,6 +582,7 @@ RENAME_AND_MAKE_PRIVATE(CNTK::NDShape, Dimensions);
 RENAME_AND_MAKE_PRIVATE(CNTK::NDShape, IsUnknown);
 RENAME_AND_MAKE_PRIVATE(CNTK::NDShape, HasInferredDimension);
 RENAME_AND_MAKE_PRIVATE(CNTK::NDShape, HasFreeDimension);
+RENAME_AND_MAKE_PRIVATE(CNTK::NDShape, HasUnboundDimension);
 
 
 #ifdef SWIGJAVA
@@ -587,29 +593,6 @@ RENAME_AND_MAKE_PRIVATE(CNTK::NDShape, HasFreeDimension);
 %rename (subShape) CNTK::NDShape::SubShape;
 %rename (toString) CNTK::NDShape::AsString;
 #endif
-=======
-%rename (GetShape) CNTK::Variable::Shape;
-%rename (GetName) CNTK::Variable::Name;
-%rename (GetVariableKind) CNTK::Variable::Kind;
-%rename (GetDynamicAxes) CNTK::Variable::DynamicAxes;
-%rename (_IsSparse) CNTK::Variable::IsSparse;
-%rename (_IsInput) CNTK::Variable::IsInput;
-%rename (_IsOutput) CNTK::Variable::IsOutput;
-%rename (_IsParameter) CNTK::Variable::IsParameter;
-%rename (_IsConstant) CNTK::Variable::IsConstant;
-%rename (_IsPlaceholder) CNTK::Variable::IsPlaceholder;
-%rename (_NeedsGradient) CNTK::Variable::NeedsGradient;
-%rename (GetOwner) CNTK::Variable::Owner;
-
-// class NDShape
-%rename (GetDimensions) CNTK::NDShape::Dimensions;
-%rename (GetRank) CNTK::NDShape::Rank;
-%rename (GetTotalSize) CNTK::NDShape::TotalSize;
-%rename (_IsUnknown) CNTK::NDShape::IsUnknown;
-%rename (_HasInferredDimension) CNTK::NDShape::HasInferredDimension;
-%rename (_HasFreeDimension) CNTK::NDShape::HasFreeDimension;
-%rename (_HasUnboundDimension) CNTK::NDShape::HasUnboundDimension;
->>>>>>> make more methods private; add missing methods to C#
 
 %ignore CNTK::NDShape::NDShape(const std::initializer_list<size_t>& dimensions);
 %ignore CNTK::NDShape::InferredDimension;
